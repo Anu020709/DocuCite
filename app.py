@@ -55,46 +55,61 @@ def extract_text_from_bytes(file_bytes):
   return extracted_text, len(reader.pages)
 
 
-# --- STREAMLIT OVERLAY DIALOG (MOBILE CHROME & SAFARI COMPATIBLE) ---
+# --- STREAMLIT OVERLAY DIALOG (FULL MULTI-PAGE CONTINUOUS SCROLL) ---
 @st.dialog("📄 Source Document Preview", width="large")
 def show_pdf_preview_modal(uploaded_file, page_num):
-    st.caption(f"Previewing Page **{page_num}** in **{st.session_state.attached_filename}**")
+    st.caption(f"Jumped to Page **{page_num}** in **{st.session_state.attached_filename}** (Scroll for all pages)")
     
     base64_pdf = base64.b64encode(uploaded_file.getvalue()).decode('utf-8')
     
-    # PDF.js Web Viewer Embed (Clean String Interpolation)
+    # PDF.js Multi-Page Continuous Canvas Viewer
     pdfjs_viewer = f"""
-    <div id="pdf-container" style="width:100%; text-align:center; background:#1e212b; padding:10px; border-radius:8px;">
+    <div id="pdf-container" style="width:100%; height:500px; overflow-y:auto; background:#1e212b; padding:15px; border-radius:8px; border:1px solid #2e303d;">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-        <canvas id="pdf-canvas" style="max-width:100%; height:auto; border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.3);"></canvas>
+        <div id="canvas-wrapper" style="display:flex; flex-direction:column; align-items:center; gap:15px;"></div>
         <script>
             const url = 'data:application/pdf;base64,{base64_pdf}';
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
             
-            pdfjsLib.getDocument(url).promise.then(pdf => {{
-                pdf.getPage({page_num}).then(page => {{
-                    const canvas = document.getElementById('pdf-canvas');
+            pdfjsLib.getDocument(url).promise.then(async (pdf) => {{
+                const wrapper = document.getElementById('canvas-wrapper');
+                let targetCanvas = null;
+
+                for (let num = 1; num <= pdf.numPages; num++) {{
+                    const page = await pdf.getPage(num);
+                    const canvas = document.createElement('canvas');
+                    canvas.id = 'page-' + num;
+                    canvas.style.maxWidth = '100%';
+                    canvas.style.height = 'auto';
+                    canvas.style.borderRadius = '6px';
+                    canvas.style.boxShadow = '0 4px 12px rgba(0,0,0,0.4)';
+                    wrapper.appendChild(canvas);
+
                     const context = canvas.getContext('2d');
-                    const viewport = page.getViewport({{ scale: 1.5 }});
-                    
+                    const viewport = page.getViewport({{ scale: 1.3 }});
                     canvas.height = viewport.height;
                     canvas.width = viewport.width;
-                    
-                    const renderContext = {{
-                        canvasContext: context,
-                        viewport: viewport
-                    }};
-                    page.render(renderContext);
-                }});
+
+                    await page.render({{ canvasContext: context, viewport: viewport }}).promise;
+
+                    if (num === {page_num}) {{
+                        targetCanvas = canvas;
+                    }}
+                }}
+
+                // Smooth scroll to target cited page
+                if (targetCanvas) {{
+                    targetCanvas.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+                }}
             }}).catch(err => {{
-                console.error("PDF.js render error:", err);
+                console.error("PDF.js rendering error:", err);
             }});
         </script>
     </div>
     """
     
     # Render Canvas Component
-    st.components.v1.html(pdfjs_viewer, height=520, scrolling=True)
+    st.components.v1.html(pdfjs_viewer, height=540, scrolling=False)
     
     # Backup Download/Open Button
     st.download_button(
@@ -104,7 +119,6 @@ def show_pdf_preview_modal(uploaded_file, page_num):
         mime="application/pdf",
         use_container_width=True
     )
-
 
 # --- SIDEBAR (DocuCite Navigation, Export & History) ---
 with st.sidebar:
@@ -313,7 +327,7 @@ elif st.session_state.nav_tab == "✉️ Contact Me":
             <p><strong>💻 Developer:</strong> Anushka Yogendra Joshi</p>
             <p><strong>🎓 Institution:</strong> MIT-WPU, Pune</p>
             <p><strong>🛠️ Tech Stack Focus:</strong> Computer Science & Contextual Systems Design</p>
-            <p><strong>📬 Email inquiries:</strong> <a class="contact-link" href="mailto:anushkajoshi@example.com">anushkajoshi@example.com</a></p>
+            <p><strong>📬 Email inquiries:</strong> <a class="contact-link" href="mailto:anushka.m.joshi@gmail.com">anushka.m.joshi@gmail.com</a></p>
         </div>
     """, unsafe_allow_html=True)
 
