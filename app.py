@@ -155,13 +155,13 @@ with st.sidebar:
     st.session_state.nav_tab = "💬 Chat Workspace"
     st.rerun()
   if st.button(
-      "📖 About Us",
+      "📖 About DocuCite",
       use_container_width=True,
       type=(
-          "secondary" if st.session_state.nav_tab != "📖 About Us" else "primary"
+          "secondary" if st.session_state.nav_tab != "📖 About DocuCite" else "primary"
       ),
   ):
-    st.session_state.nav_tab = "📖 About Us"
+    st.session_state.nav_tab = "📖 About DocuCite"
     st.rerun()
   if st.button(
       "✉️ Contact Me",
@@ -317,8 +317,8 @@ if st.session_state.nav_tab == "💬 Chat Workspace":
 
     st.markdown("<div style='margin-bottom: 16px;'></div>", unsafe_allow_html=True)
 
-# VIEW 2: ABOUT US SECTION
-elif st.session_state.nav_tab == "📖 About Us":
+# VIEW 2: About DocuCite SECTION
+elif st.session_state.nav_tab == "📖 About DocuCite":
   st.markdown("""
         <div class="about-card">
             <h2>📖 About DocuCite</h2>
