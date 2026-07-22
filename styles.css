@@ -1,7 +1,55 @@
-/* styles.css - Responsive Header & Custom Styling */
+/* styles.css - Responsive Header, Custom Styling & Dynamic Theme Variables */
 
+/* --- 1. LIGHT / DARK THEME PALETTE DEFINITIONS --- */
+[data-theme="dark"] {
+    --bg-main: #111217;
+    --bg-sidebar: #161821;
+    --bg-chat-input: #1a1c24;
+    --bg-card: #1a1c24;
+    --bg-user-msg: #2b2e3a;
+    --bg-history-btn: #1e212b;
+    --bg-history-hover: #252936;
+    --bg-cite-btn: #1e212b;
+    --bg-cite-hover: #2b3042;
+    --bg-badge: #2b3042;
+
+    --border-main: #2e303d;
+    --border-subtle: #222533;
+    --border-badge: #3d4154;
+    --border-cite: #3d4154;
+
+    --text-primary: #ffffff;
+    --text-body: #e0e2ec;
+    --text-history: #e0e0e0;
+    --accent-blue: #4a90e2;
+}
+
+[data-theme="light"] {
+    --bg-main: #f8fafc;
+    --bg-sidebar: #ffffff;
+    --bg-chat-input: #ffffff;
+    --bg-card: #ffffff;
+    --bg-user-msg: #e2e8f0;
+    --bg-history-btn: #f1f5f9;
+    --bg-history-hover: #e2e8f0;
+    --bg-cite-btn: #f1f5f9;
+    --bg-cite-hover: #e2e8f0;
+    --bg-badge: #e0f2fe;
+
+    --border-main: #cbd5e1;
+    --border-subtle: #e2e8f0;
+    --border-badge: #bae6fd;
+    --border-cite: #cbd5e1;
+
+    --text-primary: #0f172a;
+    --text-body: #334155;
+    --text-history: #1e293b;
+    --accent-blue: #2563eb;
+}
+
+/* --- 2. GLOBAL APP BACKGROUND --- */
 .stApp {
-    background-color: #111217;
+    background-color: var(--bg-main) !important;
 }
 
 /* Input field overrides */
@@ -14,15 +62,15 @@ input:focus,
 }
 
 .stChatInputContainer {
-    border: 1px solid #2e303d !important;
+    border: 1px solid var(--border-main) !important;
     border-radius: 12px !important;
-    background-color: #1a1c24 !important;
+    background-color: var(--bg-chat-input) !important;
 }
 
 /* Sidebar Structure */
 section[data-testid="stSidebar"] {
-    background-color: #161821 !important;
-    border-right: 1px solid #222533;
+    background-color: var(--bg-sidebar) !important;
+    border-right: 1px solid var(--border-subtle);
 }
 
 section[data-testid="stSidebar"] div.stBlock {
@@ -32,12 +80,12 @@ section[data-testid="stSidebar"] div.stBlock {
 .sidebar-sticky-header {
     position: sticky;
     top: 0;
-    background-color: #161821;
+    background-color: var(--bg-sidebar);
     padding: 20px 0px 10px 0px;
     z-index: 99;
-    border-bottom: 1px solid #222533;
+    border-bottom: 1px solid var(--border-subtle);
     margin-bottom: 15px;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 1.25rem;
     font-weight: 600;
     display: flex;
@@ -58,7 +106,7 @@ header[data-testid="stHeader"] {
     justify-content: space-between;
     width: 100%;
     padding-bottom: 16px;
-    border-bottom: 1px solid #2e303d;
+    border-bottom: 1px solid var(--border-main);
     margin-bottom: 24px;
     margin-top: -10px;
 }
@@ -66,7 +114,7 @@ header[data-testid="stHeader"] {
 .responsive-header-title {
     font-size: 2.2rem !important;
     font-weight: 800 !important;
-    color: #ffffff !important;
+    color: var(--text-primary) !important;
     letter-spacing: 0.5px;
     display: flex;
     align-items: center;
@@ -74,13 +122,13 @@ header[data-testid="stHeader"] {
 }
 
 .responsive-header-badge {
-    background-color: #2b3042;
-    color: #4a90e2;
+    background-color: var(--bg-badge);
+    color: var(--accent-blue);
     font-size: 0.9rem;
     font-weight: 600;
     padding: 4px 12px;
     border-radius: 14px;
-    border: 1px solid #3d4154;
+    border: 1px solid var(--border-badge);
     vertical-align: middle;
 }
 
@@ -95,17 +143,17 @@ header[data-testid="stHeader"] {
 .stMarkdown li {
     font-size: 1.08rem !important;
     line-height: 1.65 !important;
-    color: #e0e2ec !important;
+    color: var(--text-body) !important;
 }
 
 /* History Buttons */
 .history-btn {
     width: 100%;
     text-align: left;
-    background-color: #1e212b;
-    color: #e0e0e0;
+    background-color: var(--bg-history-btn);
+    color: var(--text-history);
     border: none;
-    border-left: 3px solid #4a90e2;
+    border-left: 3px solid var(--accent-blue);
     border-radius: 6px;
     padding: 8px 12px;
     margin-bottom: 6px;
@@ -117,8 +165,8 @@ header[data-testid="stHeader"] {
 }
 
 .history-btn:hover {
-    background-color: #252936;
-    color: #ffffff;
+    background-color: var(--bg-history-hover);
+    color: var(--text-primary);
 }
 
 /* Inline Link Button Styling */
@@ -131,29 +179,29 @@ button[key*="cite_btn_"] {
     height: 26px !important;
     font-size: 0.85rem !important;
     border-radius: 6px !important;
-    background-color: #1e212b !important;
-    border: 1px solid #3d4154 !important;
-    color: #4a90e2 !important;
+    background-color: var(--bg-cite-btn) !important;
+    border: 1px solid var(--border-cite) !important;
+    color: var(--accent-blue) !important;
 }
 
 button[key*="cite_btn_"]:hover {
-    background-color: #2b3042 !important;
-    border-color: #4a90e2 !important;
-    color: #ffffff !important;
+    background-color: var(--bg-cite-hover) !important;
+    border-color: var(--accent-blue) !important;
+    color: var(--text-primary) !important;
 }
 
 /* Layout Cards */
 .about-card,
 .contact-card {
-    background-color: #1a1c24;
-    border: 1px solid #2e303d;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-main);
     border-radius: 12px;
     padding: 24px;
     margin-top: 20px;
 }
 
 .contact-link {
-    color: #4a90e2 !important;
+    color: var(--accent-blue) !important;
     text-decoration: none;
     font-weight: 500;
 }
@@ -167,8 +215,8 @@ button[key*="cite_btn_"]:hover {
 }
 
 .user-msg-box {
-    background-color: #2b2e3a;
-    color: #ffffff;
+    background-color: var(--bg-user-msg);
+    color: var(--text-primary);
     padding: 12px 18px;
     border-radius: 16px 16px 4px 16px;
     max-width: 75%;

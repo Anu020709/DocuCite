@@ -13,7 +13,9 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
-
+# --- INITIALIZE THEME STATE ---
+if "theme" not in st.session_state:
+  st.session_state.theme = "dark"
 
 # Helper function to load external CSS
 def load_css(file_name):
@@ -22,6 +24,19 @@ def load_css(file_name):
 
 
 load_css("styles.css")
+
+# --- DYNAMICALLY APPLY THEME ATTRIBUTE ---
+st.markdown(
+    f"""
+    <script>
+        var body = window.parent.document.querySelector('.stApp');
+        if (body) {{
+            body.setAttribute('data-theme', '{st.session_state.theme}');
+        }}
+    </script>
+    """,
+    unsafe_allow_html=True,
+)
 
 # --- CORE SESSION STATE INITIALIZATION ---
 if "chat_history" not in st.session_state:
@@ -205,6 +220,13 @@ with st.sidebar:
       st.rerun()
   elif st.session_state.nav_tab == "💬 Chat Workspace":
     st.caption("Conversations will update here natively.")
+
+    st.markdown("### ⚙️ Settings")
+    
+        is_light = st.toggle("☀️ Light Mode", value=(st.session_state.theme == "light"))
+        st.session_state.theme = "light" if is_light else "dark"
+    
+        st.divider()
 
 # --- PROMINENT RESPONSIVE HEADER BAR ---
 st.markdown("""
