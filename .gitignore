@@ -1,0 +1,12 @@
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Streamlit secrets (keeps API keys safe)
+.streamlit/secrets.toml
+
+# Operating System temporary files
+.DS_Store
+Thumbs.db
