@@ -55,24 +55,55 @@ def extract_text_from_bytes(file_bytes):
   return extracted_text, len(reader.pages)
 
 
-# --- STREAMLIT OVERLAY DIALOG ---
+# --- STREAMLIT OVERLAY DIALOG (MOBILE CHROME & SAFARI COMPATIBLE) ---
 @st.dialog("📄 Source Document Preview", width="large")
 def show_pdf_preview_modal(uploaded_file, page_num):
-  st.caption(
-      f"Previewing Page **{page_num}** in"
-      f" **{st.session_state.attached_filename}**"
-  )
-
-  base64_pdf = base64.b64encode(uploaded_file.getvalue()).decode("utf-8")
-  pdf_iframe = f"""
-        <iframe src="data:application/pdf;base64,{base64_pdf}#page={page_num}" 
-                width="100%" 
-                height="650" 
-                type="application/pdf" 
-                style="border-radius: 10px; border: 1px solid #2e303d;">
-        </iframe>
+    st.caption(f"Previewing Page **{page_num}** in **{st.session_state.attached_filename}**")
+    
+    base64_pdf = base64.b64encode(uploaded_file.getvalue()).decode('utf-8')
+    
+    # PDF.js Web Viewer Embed (Clean String Interpolation)
+    pdfjs_viewer = f"""
+    <div id="pdf-container" style="width:100%; text-align:center; background:#1e212b; padding:10px; border-radius:8px;">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+        <canvas id="pdf-canvas" style="max-width:100%; height:auto; border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.3);"></canvas>
+        <script>
+            const url = 'data:application/pdf;base64,{base64_pdf}';
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+            
+            pdfjsLib.getDocument(url).promise.then(pdf => {{
+                pdf.getPage({page_num}).then(page => {{
+                    const canvas = document.getElementById('pdf-canvas');
+                    const context = canvas.getContext('2d');
+                    const viewport = page.getViewport({{ scale: 1.5 }});
+                    
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    const renderContext = {{
+                        canvasContext: context,
+                        viewport: viewport
+                    }};
+                    page.render(renderContext);
+                }});
+            }}).catch(err => {{
+                console.error("PDF.js render error:", err);
+            }});
+        </script>
+    </div>
     """
-  st.markdown(pdf_iframe, unsafe_allow_html=True)
+    
+    # Render Canvas Component
+    st.components.v1.html(pdfjs_viewer, height=520, scrolling=True)
+    
+    # Backup Download/Open Button
+    st.download_button(
+        label=f"📥 Download / Open Full Document",
+        data=uploaded_file.getvalue(),
+        file_name=st.session_state.attached_filename,
+        mime="application/pdf",
+        use_container_width=True
+    )
 
 
 # --- SIDEBAR (DocuCite Navigation, Export & History) ---
