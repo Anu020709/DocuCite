@@ -223,10 +223,10 @@ with st.sidebar:
 
     st.markdown("### ⚙️ Settings")
     
-        is_light = st.toggle("☀️ Light Mode", value=(st.session_state.theme == "light"))
-        st.session_state.theme = "light" if is_light else "dark"
+    is_light = st.toggle("☀️ Light Mode", value=(st.session_state.theme == "light"))
+    st.session_state.theme = "light" if is_light else "dark"
     
-        st.divider()
+    st.divider()
 
 # --- PROMINENT RESPONSIVE HEADER BAR ---
 st.markdown("""
