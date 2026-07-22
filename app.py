@@ -221,12 +221,7 @@ with st.sidebar:
   elif st.session_state.nav_tab == "💬 Chat Workspace":
     st.caption("Conversations will update here natively.")
 
-    st.markdown("### ⚙️ Settings")
-    
-    is_light = st.toggle("☀️ Light Mode", value=(st.session_state.theme == "light"))
-    st.session_state.theme = "light" if is_light else "dark"
-    
-    st.divider()
+
 
 # --- PROMINENT RESPONSIVE HEADER BAR ---
 st.markdown("""
